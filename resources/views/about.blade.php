@@ -3,10 +3,22 @@
       <!--Import Google Icon Font-->
       <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <!--Import materialize.css-->
-      <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+      <link type="text/css" rel="stylesheet" href="{{ asset('css/materialize.min.css') }}" media="screen,projection"/>
       <!--Let browser know website is optimized for mobile-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <meta charset="UTF-8">
+      <meta http-equiv="refresh" content="1 day">
+      <meta name="description" content="VIT - FFCS Timetable. Create your timetable and experience the FFCS process before FFCS. Share it ">
+      <meta name="keywords" content="VIT,FFCS, Timetable, VIT UNIVERSITY, GDG,GDG VIT, VELLORE, COURSE ALLOCATION">
+      <meta name="distribution" content="web">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+       <meta name="language" content="en-us">
+       <meta name="distribution" content="Global" />
+        <meta property="og:title" content="myFFCS- Create your timetable before FFCS">
+    <meta property="og:site_name" content="myFFCS ">
+    <meta property="og:url" content="https://www.myffcs.in">
+    <meta property="og:description" content="VIT - FFCS Timetable. Create your timetable and experience the FFCS process before FFCS. Share it">
+      <meta name="author" content="Ashwini Purohit, Vijay Nandwani">
     </head>
 
     <body>
@@ -16,7 +28,7 @@
     <div class="nav-wrapper">
       <a href="myffcs.in" class="brand-logo center">myFFCS</a>
       <ul id="nav-mobile" class="left hide-on-med-and-down">
-        <li><a href="/about">About</a></li>
+        <li><a href={!!action('TimeTableController@about')!!}>About</a></li>
         
       </ul>
     </div>
@@ -27,7 +39,7 @@
           <div class="card white">
             <div class="card-content black-text">
               <span class="card-title">About</span>
-              <p>An initiative taken by <b><a href="www.gdgvitvellore.com">GDG-VIT</a></b> to ease the process of FFCS and take the experience of FFCS before.</p>
+              <p>An initiative taken by <b><a href="http://www.gdgvitvellore.com">GDG-VIT</a></b> to ease the process of FFCS and take the experience of FFCS before.</p>
               <p>Features of myFFCS</p>
               <ul>
               <li>You can add subjects slot-wise</li>
@@ -36,7 +48,7 @@
               <li>Manage your timetable anytime.</li>
             </ul>
             <p>The complete FFCS system is based upon the new circular by VIT UNIVERSITY (can be downloaded <a href="https://academics.vit.ac.in/spotlight_file.asp?slcode=2015000491">here</a>) .</p>
-            <p>If any changes made in the slots, <b><a href="www.gdgvitvellore.com">GDG-VIT</a></b> is not responsible for that.</p>
+            <p>If any changes made in the slots, <b><a href="http://www.gdgvitvellore.com">GDG-VIT</a></b> is not responsible for that.</p>
             <br>
             <p>Contributors: </p>
             <ul>
@@ -52,7 +64,7 @@
 
       <!--Import jQuery before materialize.js-->
       <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-      <script type="text/javascript" src="js/materialize.min.js"></script>
+      <script type="text/javascript" src="{{ asset('js/materialize.min.js') }}"></script>
     </body>
   </html>
         

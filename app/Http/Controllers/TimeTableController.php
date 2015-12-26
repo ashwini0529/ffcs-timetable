@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\TimeTableSlot;
 use App\userTimeSlot;
+use App\User;
 
 
 
@@ -19,13 +20,18 @@ class TimeTableController extends Controller
     public function submitResponse(Request $request){
         
 		$validator = Validator::make($request->all(), ['courseCode'=>'required',
-                                   'courseName'=>'required',
                                    'credits'=>'required|numeric',
                                    'courseSlot'=>'required'
         ]);
 		$user = \Auth::user();
 		$existingCredits = 0;
-		$slotsToBeAdded = TimeTableSlot::where('name', $request->input('courseSlot'))->get();
+		$slotsToBeAddedtemp = str_replace("+","-",$request->input('courseSlot') );
+		$slotsToBeAddedtemp = explode("-",$slotsToBeAddedtemp );
+		if(count($slotsToBeAddedtemp) == 2){
+			$slotsToBeAdded = TimeTableSlot::where('name', $slotsToBeAddedtemp[0])->orWhere('name', $slotsToBeAddedtemp[1])->get();
+		}else{
+			$slotsToBeAdded = TimeTableSlot::where('name', $slotsToBeAddedtemp[0])->get();
+		}
 		$existingSlots = $user->usertimeslots;
 		$this->isClashing = 0;
 		$this->creditsMore = 0;
@@ -66,23 +72,33 @@ class TimeTableController extends Controller
                         ->withErrors($validator)
                         ->withInput();
         }
-
-        $userTimeSlot = new userTimeSlot;
+        $credits = $request->input('credits');
+        foreach ($slotsToBeAddedtemp as $value) {
+        	$userTimeSlot = new userTimeSlot;
         $userTimeSlot->userid = $user->id;
-        $userTimeSlot->credits = $request->input('credits');
-        $userTimeSlot->slotid = $request->input('courseSlot');
+        $userTimeSlot->credits = $credits;
+        $credits = 0;
+        $userTimeSlot->slotid = $value;
         $userTimeSlot->courseCode = $request->input('courseCode');
-        $userTimeSlot->nameofthecourse = $request->input('courseName');
 		$userTimeSlot->save();
+        }
+        
+		 return redirect('home');
     }
 
     public function home(){
-    	$timetableslots = TimeTableSlot::all();
-        $tofill = array();
-        foreach($timetableslots as $timetableslot){
-            $tofill[$timetableslot['name']] =  $timetableslot['name'];
-        }
-        return view('home', ['slots' => $tofill]);
+        $user = \Auth::user();
+        $sum = $user->usertimeslots->sum('credits');
+        $id = $user->id;
+        return view('home', ['id' => $id, 'sum'=>$sum]);
+    }
+
+    public function about(){
+    	return view('about');
+    }
+
+    public function share($id){
+        return view('share', ['id' => $id]);
     }
 
     public function test(){
@@ -104,8 +120,28 @@ class TimeTableController extends Controller
     	$timeslotsaray = array();
     	$existingSlots = $user->usertimeslots;
     	foreach($existingSlots as $existingSlot){
+    		$courseCode = $existingSlot->courseCode;
     		foreach($existingSlot->timeslots as $timeslot){
-    			array_push($timeslotsaray, $timeslot->htmlid);
+    			$temp = array();
+    			array_push($temp, $courseCode);
+    			array_push($temp, $timeslot->htmlid);
+    			array_push($timeslotsaray, $temp);
+    		}
+    	}
+    	return json_encode($timeslotsaray);
+    }
+
+    public function sharetableinfo(Request $request){
+    	$user=User::where('id', $request->get('id'))->get();
+    	$timeslotsaray = array();
+    	$existingSlots = $user[0]->usertimeslots;
+    	foreach($existingSlots as $existingSlot){
+    		$courseCode = $existingSlot->courseCode;
+    		foreach($existingSlot->timeslots as $timeslot){
+    			$temp = array();
+    			array_push($temp, $courseCode);
+    			array_push($temp, $timeslot->htmlid);
+    			array_push($timeslotsaray, $temp);
     		}
     	}
     	return json_encode($timeslotsaray);
@@ -116,5 +152,6 @@ class TimeTableController extends Controller
  		$unencodedData=base64_decode($filteredData);
  		$name = time();
  		file_put_contents($name.'.png', $unencodedData);
+ 		return response()->download($name.'.png', 'Timetable.png');
     }
 }

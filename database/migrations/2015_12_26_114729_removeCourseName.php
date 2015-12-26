@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddRegnoColumn extends Migration
+class RemoveCourseName extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class AddRegnoColumn extends Migration
      */
     public function up()
     {
-        Schema::table('users', function ($table) {
-            $table->string('regno');
+        Schema::table('time_table', function ($table) {
+            $table->dropColumn('nameofthecourse');
         });
     }
 
@@ -24,8 +24,8 @@ class AddRegnoColumn extends Migration
      */
     public function down()
     {
-        Schema::table('users', function ($table) {
-            $table->dropColumn('regno');
+        Schema::table('time_table', function ($table) {
+            $table->string('nameofthecourse');
         });
     }
 }

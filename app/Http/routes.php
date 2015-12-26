@@ -9,9 +9,14 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', ['middleware' => ['web'], function () {
+	if(Auth::check()){
+		return redirect('home');
+	}else{
+		return view('welcome');
+	}
+    
+}]);
 
 
 /*
@@ -24,7 +29,7 @@ Route::get('/', function () {
 | kernel and includes session state, CSRF protection, and more.
 |
 */
-Route::group(['middleware' => ['web']], function () {
+Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/submit', 'TimeTableController@submitResponse');
 	Route::get('/home', 'TimeTableController@home');
 	Route::get('/test', 'TimeTableController@test');
@@ -32,6 +37,10 @@ Route::group(['middleware' => ['web']], function () {
 
 });
 Route::post('/save', 'TimeTableController@save');
+Route::get('/about', 'TimeTableController@about');
+Route::get('/share/{id}', 'TimeTableController@share');
+Route::get('sharetableinfo', 'TimeTableController@sharetableinfo');
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 });
+
